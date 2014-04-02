@@ -24,7 +24,7 @@ end
 
 def print_list(list)
 	list.each_with_index do |student_info, index|
-		print "#{index + 1}. #{student_info[:name]} (#{student_info[:cohort].to_s.capitalize} cohort)\n" if student_info[:name].split('')[0] == "A"
+		print "#{index + 1}. #{student_info[:name]} (#{student_info[:cohort].to_s.capitalize} cohort)\n" if student_info[:name].split('')[0] == "A" && student_info[:name].length<12
 	end
 end
 
