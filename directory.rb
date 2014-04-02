@@ -23,8 +23,14 @@ def print_header()
 end
 
 def print_list(list)
-	list.each_with_index do |student_info, index|
-		print "#{index + 1}. #{student_info[:name]} (#{student_info[:cohort].to_s.capitalize} cohort)\n" if student_info[:name].split('')[0] == "A" && student_info[:name].length<12
+	max_index = list.length-1;
+	i=0
+
+	while i<=max_index
+		print "#{i+1}. #{list[i][:name]} (#{list[i][:cohort].to_s.capitalize} cohort)\n" if list[i][:name].split('')[0] == "A" && list[i][:name].length<12
+		i +=1
+	# list.each_with_index do |student_info, index|
+	# 	print "#{index + 1}. #{student_info[:name]} (#{student_info[:cohort].to_s.capitalize} cohort)\n" if student_info[:name].split('')[0] == "A" && student_info[:name].length<12
 	end
 end
 
