@@ -9,8 +9,23 @@ def input_students
 	while !name.empty? do
 		# add the student hash to the array
 		students << {:name => name, :cohort => :november}
-		print "Now we have #{students.length} students\n"
-		# get another name from the user
+		
+
+		enterNewField= true
+		while enterNewField ==true# get another name from the user
+			print "Do you want to add another field to #{:name}'s information? (y/n)\n"
+			another_field = gets.chomp.to_s
+			if another_field.capitalize == "Y"
+				print "What is the name of the field?\n"
+				new_field = gets.chomp
+				print "What is the value?\n"
+				new_val = gets.chomp
+				students[-1][new_field.to_sym]=new_val
+			else
+				enterNewField = false
+			end
+		end
+		print "Now we have #{students.length} students\nPlease enter the name of the next student\n"
 		name = gets.chomp
 	end
 	#return the array of students
@@ -22,15 +37,25 @@ def print_header()
 	print "-----------\n"
 end
 
+def print_hash(list_entry)
+	list_entry.each do |key, value|
+		print "#{key} : #{value} \t"
+	end
+	print "\n"
+end
+
+def print_rule(hash)
+	hash[:name].split('')[0] == "A" && hash[:name].length<12
+end
+
+
 def print_list(list)
 	max_index = list.length-1;
 	i=0
 
 	while i<=max_index
-		print "#{i+1}. #{list[i][:name]} (#{list[i][:cohort].to_s.capitalize} cohort)\n" if list[i][:name].split('')[0] == "A" && list[i][:name].length<12
+		print "#{i+1}. #{print_hash(list[i])} " if print_rule(list[i])
 		i +=1
-	# list.each_with_index do |student_info, index|
-	# 	print "#{index + 1}. #{student_info[:name]} (#{student_info[:cohort].to_s.capitalize} cohort)\n" if student_info[:name].split('')[0] == "A" && student_info[:name].length<12
 	end
 end
 
