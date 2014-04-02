@@ -84,9 +84,24 @@ def parse_names(list)
 		parsedList.push(x[0])	
 	end
 	parsedList
+
 end
 
 #Iterate through the names and list them.
+
+def create_student(student, cohort)
+	student_info = [student, cohort.to_sym]
+end
+
+def create_student_array_by_name_array(names, cohort=:March)
+	students =[]
+	names.each do |name|
+		students.push(create_student(name, cohort))
+	end
+	students
+
+end
+
 
 
 
@@ -105,12 +120,14 @@ def print_footer(list)
 	puts "Overall, we have #{list.count} students."
 end
 
+#Data to Process, won't need later on
 names = parse_names(rawnameslist)
+print create_student_array_by_name_array(names)
 
+=begin 
 print_header
 print_list(names)
 print_footer(names)
 
-
-
+=end
 
