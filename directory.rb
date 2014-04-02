@@ -1,5 +1,5 @@
 
-	
+# first, we imported a list	
 rawnameslist = %Q{Steve Musgrave
 steve.musgrave@outlook.com
 stephanmusgrave
@@ -72,9 +72,13 @@ urbanwolf_uk
 Julie Walker
 julieannwalker@hotmail.com}
 
-def parser(list)
-	nameslist = list.split("\n\n")
+
+#Splits a multiline string separated by paragraphs, then we split the extras again into individuals, before finally extracting 
+#the name
+
+def parse_names(list)
 	parsedList =[]
+	nameslist = list.split("\n\n")
 	nameslist.each do |str|
 		x = str.split("\n")
 		parsedList.push(x[0])	
@@ -82,16 +86,30 @@ def parser(list)
 	parsedList
 end
 
-def printlist(list)
+#Iterate through the names and list them.
+
+
+
+def print_header()
+	puts "The students of my cohort at Makers Academy"
+	puts "-----------"
+end
+
+def print_list(list)
 	list.each do |name|
 		puts name
 	end
+end
+
+def print_footer(list)
 	puts "Overall, we have #{list.count} students."
 end
 
-names = parser(rawnameslist)
+names = parse_names(rawnameslist)
 
-printlist(names)
+print_header
+print_list(names)
+print_footer(names)
 
 
 
