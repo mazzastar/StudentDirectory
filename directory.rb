@@ -76,6 +76,7 @@ julieannwalker@hotmail.com}
 #Splits a multiline string separated by paragraphs, then we split the extras again into individuals, before finally extracting 
 #the name
 
+#Specfic To Data in file
 def parse_names(list)
 	parsedList =[]
 	nameslist = list.split("\n\n")
@@ -87,22 +88,22 @@ def parse_names(list)
 
 end
 
-#Iterate through the names and list them.
-
-def create_student(student, cohort)
-	student_info = [student, cohort.to_sym]
-end
-
 def create_student_array_by_name_array(names, cohort=:March)
 	students =[]
 	names.each do |name|
-		students.push(create_student(name, cohort))
+		students.push(create_student_hash(name, cohort))
 	end
 	students
 
 end
+#End
 
 
+#Iterate through the names and list them.
+
+def create_student_hash(student, cohort)
+	student_info = {:name => student, :cohort => cohort.to_sym}
+end
 
 
 def print_header()
@@ -111,8 +112,8 @@ def print_header()
 end
 
 def print_list(list)
-	list.each do |name|
-		puts name
+	list.each do |student_info|
+		puts "#{student_info[:name]} (#{student_info[:cohort]} cohort)"
 	end
 end
 
@@ -122,12 +123,11 @@ end
 
 #Data to Process, won't need later on
 names = parse_names(rawnameslist)
-print create_student_array_by_name_array(names)
+student_array =  create_student_array_by_name_array(names)
 
-=begin 
+
 print_header
-print_list(names)
-print_footer(names)
+print_list(student_array)
+print_footer(student_array)
 
-=end
 
