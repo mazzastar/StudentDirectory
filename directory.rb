@@ -82,6 +82,17 @@ def parser(list)
 	parsedList
 end
 
-print parser(rawnameslist)
+def printlist(list)
+	list.each do |name|
+		puts name
+	end
+	puts "Overall, we have #{list.count} students."
+end
+
+names = parser(rawnameslist)
+
+printlist(names)
+
+
 
 
