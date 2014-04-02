@@ -23,8 +23,8 @@ def print_header()
 end
 
 def print_list(list)
-	list.each do |student_info|
-		print "#{student_info[:name]} (#{student_info[:cohort].to_s.capitalize} cohort)\n"
+	list.each_with_index do |student_info, index|
+		print "#{index + 1}. #{student_info[:name]} (#{student_info[:cohort].to_s.capitalize} cohort)\n"
 	end
 end
 
