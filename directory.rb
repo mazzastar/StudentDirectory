@@ -68,7 +68,7 @@ end
 def hash_to_string(hash)
 	string=""
 	hash.each do |key, value|
-		string << "#{key} : #{value}\t"
+		string << "#{key} : #{value}  "
 	end
 	string
 end	
@@ -84,7 +84,9 @@ def print_list(list)
 
 	while i<=max_index
 		if print_validation(list[i])
-			print "#{i+1}. #{hash_to_string(list[i])}\n"
+			centered_string =  "#{i+1}. #{hash_to_string(list[i])}"
+			puts centered_string.center(139)
+			#print "#{i+1}. #{hash_to_string(list[i])}\n"
 		end 
 		# print "#{i+1}. #{print_hash(list[i])}\n" if print_rule(list[i])
 		i +=1
