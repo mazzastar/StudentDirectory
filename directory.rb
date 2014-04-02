@@ -1,3 +1,6 @@
+
+# amend input_students - break it into smaller methods, and allow input of cohort
+
 def append_fields(hash)
 	enterNewField = true
 	while enterNewField
@@ -18,7 +21,7 @@ def append_fields(hash)
 end
 
 def input_students
-	print "Please enter the names of the students\n"
+	print "Please enter the name and cohort of the students\nUse the format: name : cohort. Cohort defaults to March.\n"
 	print "To finish, just hit return twice\n"
 	# create an empty array
 	students = []
@@ -29,23 +32,7 @@ def input_students
 		# add the student hash to the array
 		students << {:name => name, :cohort => :november}
 		append_fields(students[-1])
-		#Deal with extra fields
-
-		# enterNewField= true
 		
-		# while enterNewField ==true# get another name from the user
-		# 	print "Do you want to add another field to #{:name}'s information? (y/n)\n"
-		# 	another_field = gets.chomp.to_s
-		# 	if another_field.capitalize == "Y"
-		# 		print "What is the name of the field?\n"
-		# 		new_field = gets.chomp
-		# 		print "What is the value?\n"
-		# 		new_val = gets.chomp
-		# 		students[-1][new_field.to_sym]=new_val
-		# 	else
-		# 		enterNewField = false
-		# 	end
-		# end
 		print "Now we have #{students.length} students\nPlease enter the name of the next student\n"
 		name = gets.chomp
 	end
