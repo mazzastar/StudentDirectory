@@ -1,10 +1,22 @@
+TIOCGWINSZ = 0x40087468
+
+def get_winsize
+  str = [0, 0, 0, 0].pack('SSSS')
+  if STDIN.ioctl(TIOCGWINSZ, str) >= 0
+    rows, cols, xpixels, ypixels = str.unpack("SSSS")
+    #rows, cols, xpixels, ypixels
+    cols
+  else
+    puts "Unable to get window size"
+  end
+end
 
 # amend input_students - break it into smaller methods, and allow input of cohort
-
+puts "... #{ENV['COLUMNS'].inspect}"
 def append_fields(hash)
 	enterNewField = true
 	while enterNewField
-		print "Do you want to add another field to #{hash[:name]}'s information? (y/n)\n"
+		print "Do you want to add another field to #{hash[:Name]}'s information? (y/n)\n"
 		another_field = gets.chomp.to_s.upcase
 		if another_field == "Y"
 			print "What is the name of the field?\n"
@@ -20,29 +32,32 @@ def append_fields(hash)
 
 end
 
+
 def input_students
-	print "Please enter the name and cohort of the students\nUse the format: name : cohort. Cohort defaults to March.\n"
+	print "Please enter the name and cohort of the students\nUse the format: Name : Cohort. Cohort defaults to March.\n"
 	print "To finish, just hit return twice\n"
 	# create an empty array
 	students = []
 	# get first name
-	name = gets.chomp
+	name_and_cohort = gets.chomp.split(":")
 	# while the name is not empty repeat this code
-	while !name.empty? do
+	while !name_and_cohort.empty? do
 		# add the student hash to the array
-		students << {:name => name, :cohort => :november}
+		name_and_cohort.each {|ele| ele.strip!.capitalize!}
+		name_and_cohort[1] = :March if name_and_cohort[1] == nil
+		students << {:Name => name_and_cohort[0], :Cohort => name_and_cohort[1].to_sym}
 		append_fields(students[-1])
 		
 		print "Now we have #{students.length} students\nPlease enter the name of the next student\n"
-		name = gets.chomp
+		name_and_cohort = gets.chomp.split(":")
 	end
 	#return the array of students
 	students
 end
 
 def print_header()
-	print "The students of my cohort at Makers Academy\n"
-	print "-----------\n"
+	puts "The students of my cohort at Makers Academy".center(get_winsize)
+	puts "-----------".center(get_winsize)
 end
 
 def print_hash(hash)
@@ -61,7 +76,7 @@ def hash_to_string(hash)
 end	
 
 def print_validation(hash)
-	hash[:name].split('')[0] == "A" && hash[:name].length<12
+	hash[:Name].split('')[0] == "A" && hash[:Name].length<12
 end
 
 
@@ -72,7 +87,7 @@ def print_list(list)
 	while i<=max_index
 		if print_validation(list[i])
 			centered_string =  "#{i+1}. #{hash_to_string(list[i])}"
-			puts centered_string.center(139)
+			puts centered_string.center(get_winsize)
 			#print "#{i+1}. #{hash_to_string(list[i])}\n"
 		end 
 		# print "#{i+1}. #{print_hash(list[i])}\n" if print_rule(list[i])
@@ -82,8 +97,10 @@ def print_list(list)
 end
 
 def print_footer(list)
-	print "\nOverall, we have #{list.count} students.\n\n"
+	puts "Overall, we have #{list.count} students.".center(get_winsize)
 end
+
+
 
 students = input_students
 print_header
