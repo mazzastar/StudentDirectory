@@ -34,17 +34,25 @@ end
 
 
 def input_students
+	months = [:January, :February, :March, :April, :May, :June, :July, :August, :September, :October, :November, :December]
 	print "Please enter the name and cohort of the students\nUse the format: Name : Cohort. Cohort defaults to March.\n"
 	print "To finish, just hit return twice\n"
 	# create an empty array
 	students = []
 	# get first name
-	name_and_cohort = gets.chomp.split(":")
+	name_and_cohort = gets.chomp.split(":").map{|field| field.strip}.map{|field| field.capitalize}
 	# while the name is not empty repeat this code
 	while !name_and_cohort.empty? do
 		# add the student hash to the array
-		name_and_cohort.each {|ele| ele.strip!.capitalize!}
-		name_and_cohort[1] = :March if name_and_cohort[1] == nil
+		name_and_cohort << "March" if name_and_cohort[1].nil?
+
+
+		if !months.include?(name_and_cohort[1].to_sym)
+			puts "Unrecognised cohort (should be a month)."
+			print "Now we have #{students.length} students\nPlease enter the name of the next student\n"
+			name_and_cohort = gets.chomp.split(":")
+			next
+		end
 		students << {:Name => name_and_cohort[0], :Cohort => name_and_cohort[1].to_sym}
 		append_fields(students[-1])
 		
