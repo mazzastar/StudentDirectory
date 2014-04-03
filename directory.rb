@@ -1,4 +1,8 @@
 TIOCGWINSZ = 0x40087468
+def valid_months(input_symbol)
+	months = [:January, :February, :March, :April, :May, :June, :July, :August, :September, :October, :November, :December]
+	months.include?(input_symbol)
+end
 
 def get_winsize
   str = [0, 0, 0, 0].pack('SSSS')
@@ -12,7 +16,6 @@ def get_winsize
 end
 
 # amend input_students - break it into smaller methods, and allow input of cohort
-puts "... #{ENV['COLUMNS'].inspect}"
 def append_fields(hash)
 	enterNewField = true
 	while enterNewField
@@ -32,6 +35,16 @@ def append_fields(hash)
 
 end
 
+def cleanup(string)
+	string.strip!
+	string.capitalize!
+	string
+end
+
+def get_info
+	x = gets.chomp.split(":").map{|field| cleanup(field)}
+	x
+end
 
 def input_students
 	months = [:January, :February, :March, :April, :May, :June, :July, :August, :September, :October, :November, :December]
@@ -40,23 +53,23 @@ def input_students
 	# create an empty array
 	students = []
 	# get first name
-	name_and_cohort = gets.chomp.split(":").map{|field| field.strip}.map{|field| field.capitalize}
+	name_and_cohort = get_info
 	# while the name is not empty repeat this code
 	while !name_and_cohort.empty? do
 		# add the student hash to the array
 		name_and_cohort << "March" if name_and_cohort[1].nil?
-		if !months.include?(name_and_cohort[1].to_sym)
-			puts name_and_cohort[1]
+		#if !months.include?(name_and_cohort[1].to_sym)
+		if !valid_months(name_and_cohort[1].to_sym)
 			puts "Unrecognised cohort (should be a month)."
 			print "Now we have #{students.length} students\nPlease enter the name of the next student\n"
-			name_and_cohort = gets.chomp.split(":").map{|field| field.strip}.map{|field| field.capitalize}
+			name_and_cohort = get_info
 			next
 		end
 		students << {:Name => name_and_cohort[0], :Cohort => name_and_cohort[1].to_sym}
 		append_fields(students[-1])
 		
 		print "Now we have #{students.length} students\nPlease enter the name of the next student\n"
-		name_and_cohort = gets.chomp.split(":").map{|field| field.strip}.map{|field| field.capitalize}
+		name_and_cohort = get_info
 	end
 	#return the array of students
 	students
@@ -95,13 +108,12 @@ def print_list(list)
 		if print_validation(list[i])
 			centered_string =  "#{i+1}. #{hash_to_string(list[i])}"
 			puts centered_string.center(get_winsize)
-			#print "#{i+1}. #{hash_to_string(list[i])}\n"
 		end 
-		# print "#{i+1}. #{print_hash(list[i])}\n" if print_rule(list[i])
 		i +=1
 
 	end
 end
+
 
 def print_footer(list)
 	puts "Overall, we have #{list.count} students.".center(get_winsize)
@@ -115,10 +127,11 @@ def extract_from(students, cohort_sym)
 end
 
 students = input_students
+print "Which cohort would you like to filter by?\n> "
+cohort_sym= (cleanup(gets.chomp)).to_sym
+
 print_header
 #get cohort choice
-cohort_sym= :March
-
 chosen_students = extract_from(students,cohort_sym)
 print_list(chosen_students)
 print_footer(students)
