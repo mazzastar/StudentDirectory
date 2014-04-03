@@ -46,6 +46,16 @@ def get_info
 	x
 end
 
+def is_plural?(value)
+	value > 1
+end
+
+
+def print_current_students(students)
+	str = "Currently we have #{students.length} student#{'s' if is_plural?(students.length)}\nPlease enter the name of the next student\n"
+	print str
+end
+
 def input_students
 	months = [:January, :February, :March, :April, :May, :June, :July, :August, :September, :October, :November, :December]
 	print "Please enter the name and cohort of the students\nUse the format: Name : Cohort. Cohort defaults to March.\n"
@@ -61,14 +71,14 @@ def input_students
 		#if !months.include?(name_and_cohort[1].to_sym)
 		if !valid_months(name_and_cohort[1].to_sym)
 			puts "Unrecognised cohort (should be a month)."
-			print "Now we have #{students.length} students\nPlease enter the name of the next student\n"
+			print_current_students
 			name_and_cohort = get_info
 			next
 		end
 		students << {:Name => name_and_cohort[0], :Cohort => name_and_cohort[1].to_sym}
 		append_fields(students[-1])
 		
-		print "Now we have #{students.length} students\nPlease enter the name of the next student\n"
+		print_current_students(students)
 		name_and_cohort = get_info
 	end
 	#return the array of students
@@ -116,7 +126,7 @@ end
 
 
 def print_footer(list)
-	puts "Overall, we have #{list.count} students.".center(get_winsize)
+	puts "Overall, we have #{list.count} student#{'s' if is_plural?(list.count)}.".center(get_winsize)
 end
 
 def extract_from(students, cohort_sym)
