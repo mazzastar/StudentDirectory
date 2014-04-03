@@ -45,19 +45,18 @@ def input_students
 	while !name_and_cohort.empty? do
 		# add the student hash to the array
 		name_and_cohort << "March" if name_and_cohort[1].nil?
-
-
 		if !months.include?(name_and_cohort[1].to_sym)
+			puts name_and_cohort[1]
 			puts "Unrecognised cohort (should be a month)."
 			print "Now we have #{students.length} students\nPlease enter the name of the next student\n"
-			name_and_cohort = gets.chomp.split(":")
+			name_and_cohort = gets.chomp.split(":").map{|field| field.strip}.map{|field| field.capitalize}
 			next
 		end
 		students << {:Name => name_and_cohort[0], :Cohort => name_and_cohort[1].to_sym}
 		append_fields(students[-1])
 		
 		print "Now we have #{students.length} students\nPlease enter the name of the next student\n"
-		name_and_cohort = gets.chomp.split(":")
+		name_and_cohort = gets.chomp.split(":").map{|field| field.strip}.map{|field| field.capitalize}
 	end
 	#return the array of students
 	students
@@ -108,9 +107,18 @@ def print_footer(list)
 	puts "Overall, we have #{list.count} students.".center(get_winsize)
 end
 
-
+def extract_from(students, cohort_sym)
+	results = students.select do |student|
+		student[:Cohort]==cohort_sym
+	end
+	results
+end
 
 students = input_students
 print_header
-print_list(students)
+#get cohort choice
+cohort_sym= :March
+
+chosen_students = extract_from(students,cohort_sym)
+print_list(chosen_students)
 print_footer(students)
