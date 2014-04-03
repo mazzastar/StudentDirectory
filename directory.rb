@@ -1,4 +1,8 @@
 TIOCGWINSZ = 0x40087468
+def new_chomp(string)
+	string.gsub!("\n", "")
+end
+
 def valid_months(input_symbol)
 	months = [:January, :February, :March, :April, :May, :June, :July, :August, :September, :October, :November, :December]
 	months.include?(input_symbol)
@@ -42,8 +46,8 @@ def cleanup(string)
 end
 
 def get_info
-	x = gets.chomp.split(":").map{|field| cleanup(field)}
-	x
+	x = new_chomp(gets)
+	x.split(":").map{|field| cleanup(field)}
 end
 
 def is_plural?(value)
