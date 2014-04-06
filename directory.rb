@@ -8,6 +8,10 @@ def valid_months(input_symbol)
 	months.include?(input_symbol)
 end
 
+def has_student?(student_list)
+	!student_list.empty?
+end
+
 def get_winsize
   str = [0, 0, 0, 0].pack('SSSS')
   if STDIN.ioctl(TIOCGWINSZ, str) >= 0
@@ -117,7 +121,7 @@ def input_students(existing_students)
 		#if !months.include?(name_and_cohort[1].to_sym)
 		if !valid_months(name_and_cohort[1].to_sym)
 			puts "Unrecognised cohort (should be a month)."
-			print_current_students
+			print_current_students(students)
 			name_and_cohort = get_info
 			next
 		end
@@ -126,6 +130,9 @@ def input_students(existing_students)
 		
 		print_current_students(students)
 		name_and_cohort = get_info
+	end
+	if !has_student?(students)
+		puts "No students! Starting again Press Ctrl-C to exit".center(get_winsize, "*")
 	end
 	#return the array of students
 	students
@@ -187,9 +194,13 @@ defaults_values = {Cohort: :March, Email: "no Email", Skype: "no user"}
 existing_students = process_file("students.csv", defaults_values)
 
 students = input_students(existing_students)
+
+while !has_student?(students)
+	students = input_students
+end
+
 print "Which cohort would you like to filter by?\n> "
 cohort_sym= (cleanup(gets.chomp)).to_sym
-
 print_header
 #get cohort choice
 chosen_students = extract_from(students,cohort_sym)
