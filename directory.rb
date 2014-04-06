@@ -27,10 +27,31 @@ def readfile(file)
 	file_name = file #"students.csv"
 	txt = File.open(file_name)
 	student_array = txt.read().split("\n")
+	txt.close()
 	# puts student_array.inspect
 	parsedValues = student_array.map do |student|
 		student.split(",").map{|field_value| field_value.strip}
 	end 
+end
+
+def openWriteFileStream(file)
+	file_name = file
+	txt = File.open(file_name, 'a')
+end
+
+def appendFile(fileStream, line)
+	fileStream.write("\n")
+	fileStream.write(line)
+end
+
+def closeWriteFileStream(fileStream)
+	fileStream.close()
+end
+
+def addLineToFile(file, line)
+	fs = openWriteFileStream(file)
+	appendFile(fs, line)
+	closeWriteFileStream(fs)
 end
 
 def add_defaults(hash_array, defaults_values)
@@ -106,8 +127,18 @@ def print_current_students(students)
 	print str
 end
 
-def input_students(existing_students)
+def hash_to_csv_string(hash, order)
+	string_array = []
+	order.each do |key|
+		string_array<<hash[key]
+	end
+	string_array.join(",")
+end
+
+def input_students(existing_students, file)
 	months = [:January, :February, :March, :April, :May, :June, :July, :August, :September, :October, :November, :December]
+	order =[:Name, :Email, :Skype]
+
 	print "Please enter the name and cohort of the students\nUse the format: Name : Cohort. Cohort defaults to March.\n"
 	print "To finish, just hit return twice\n"
 	# create an empty array
@@ -127,9 +158,15 @@ def input_students(existing_students)
 		end
 		students << {:Name => name_and_cohort[0], :Cohort => name_and_cohort[1].to_sym}
 		append_fields(students[-1])
-		
+		puts hash_to_csv_string(students[-1], order)
+		line = hash_to_csv_string(students[-1], order)
+		addLineToFile(file, line)
+
+
+
 		print_current_students(students)
 		name_and_cohort = get_info
+
 	end
 	if !has_student?(students)
 		puts "No students! Starting again Press Ctrl-C to exit".center(get_winsize, "*")
@@ -190,10 +227,13 @@ def extract_from(students, cohort_sym)
 end
 
 # Adjust this to take input of existing data.
+file = "students.csv"
 defaults_values = {Cohort: :March, Email: "no Email", Skype: "no user"}
-existing_students = process_file("students.csv", defaults_values)
 
-students = input_students(existing_students)
+
+existing_students = process_file(file, defaults_values)
+
+students = input_students(existing_students, file)
 
 while !has_student?(students)
 	students = input_students
