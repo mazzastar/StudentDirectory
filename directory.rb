@@ -12,12 +12,54 @@ def get_winsize
   str = [0, 0, 0, 0].pack('SSSS')
   if STDIN.ioctl(TIOCGWINSZ, str) >= 0
     rows, cols, xpixels, ypixels = str.unpack("SSSS")
-    #rows, cols, xpixels, ypixels
     cols
   else
     puts "Unable to get window size"
   end
 end
+
+#Load File
+def readfile(file)
+	file_name = file #"students.csv"
+	txt = File.open(file_name)
+	student_array = txt.read().split("\n")
+	# puts student_array.inspect
+	parsedValues = student_array.map do |student|
+		student.split(",").map{|field_value| field_value.strip}
+	end 
+end
+
+def add_defaults(hash_array, defaults_values)
+	default_keys = defaults_values.keys.map{|key| key.to_sym}
+	hash_array.each do|hash| 
+		default_keys.each{|key| hash[key]=defaults_values[key] if hash[key].nil? }
+	end
+end
+
+def header_extract(parsedValues)
+	headers =  parsedValues.first.map{|fields| fields.capitalize.to_sym}
+end
+
+def data_extract(parsedValues)
+	data = parsedValues[1...(parsedValues.length)]
+end
+
+def hashup_data(headers, data)
+	#Zip Array
+	hash_array = data.map do |y|
+		Hash[headers.zip(y)]
+	end	
+
+end
+
+def process_file(file, defaults_values)
+	parsedValues = readfile(file)
+	headers= header_extract(parsedValues)
+	data = data_extract(parsedValues)
+	hash_array = hashup_data(headers, data)	
+	add_defaults(hash_array, defaults_values)
+end
+
 
 # amend input_students - break it into smaller methods, and allow input of cohort
 def append_fields(hash)
@@ -60,12 +102,12 @@ def print_current_students(students)
 	print str
 end
 
-def input_students
+def input_students(existing_students)
 	months = [:January, :February, :March, :April, :May, :June, :July, :August, :September, :October, :November, :December]
 	print "Please enter the name and cohort of the students\nUse the format: Name : Cohort. Cohort defaults to March.\n"
 	print "To finish, just hit return twice\n"
 	# create an empty array
-	students = []
+	students = existing_students
 	# get first name
 	name_and_cohort = get_info
 	# while the name is not empty repeat this code
@@ -140,7 +182,11 @@ def extract_from(students, cohort_sym)
 	results
 end
 
-students = input_students
+# Adjust this to take input of existing data.
+defaults_values = {Cohort: :March, Email: "no Email", Skype: "no user"}
+existing_students = process_file("students.csv", defaults_values)
+
+students = input_students(existing_students)
 print "Which cohort would you like to filter by?\n> "
 cohort_sym= (cleanup(gets.chomp)).to_sym
 
