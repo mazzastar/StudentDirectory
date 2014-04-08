@@ -2,10 +2,11 @@ TIOCGWINSZ = 0x40087468
 def new_chomp(string)
 	string.gsub!("\n", "")
 end
+@months = [:January, :February, :March, :April, :May, :June, :July, :August, :September, :October, :November, :December]
 
 def valid_months(input_symbol)
-	months = [:January, :February, :March, :April, :May, :June, :July, :August, :September, :October, :November, :December]
-	months.include?(input_symbol)
+	# months = [:January, :February, :March, :April, :May, :June, :July, :August, :September, :October, :November, :December]
+	@months.include?(input_symbol)
 end
 
 def has_student?(student_list)
@@ -136,7 +137,6 @@ def hash_to_csv_string(hash, order)
 end
 
 def input_students(existing_students, file)
-	months = [:January, :February, :March, :April, :May, :June, :July, :August, :September, :October, :November, :December]
 	order =[:Name, :Email, :Skype]
 
 	print "Please enter the name and cohort of the students\nUse the format: Name : Cohort. Cohort defaults to March.\n"
@@ -149,7 +149,6 @@ def input_students(existing_students, file)
 	while !name_and_cohort.empty? do
 		# add the student hash to the array
 		name_and_cohort << "March" if name_and_cohort[1].nil?
-		#if !months.include?(name_and_cohort[1].to_sym)
 		if !valid_months(name_and_cohort[1].to_sym)
 			puts "Unrecognised cohort (should be a month)."
 			print_current_students(students)
@@ -161,8 +160,6 @@ def input_students(existing_students, file)
 		puts hash_to_csv_string(students[-1], order)
 		line = hash_to_csv_string(students[-1], order)
 		addLineToFile(file, line)
-
-
 
 		print_current_students(students)
 		name_and_cohort = get_info
@@ -230,14 +227,16 @@ end
 file = "students.csv"
 defaults_values = {Cohort: :March, Email: "no Email", Skype: "no user"}
 
-
 existing_students = process_file(file, defaults_values)
 
-students = input_students(existing_students, file)
+new_students =[]
+new_students = input_students(new_students, file)
 
-while !has_student?(students)
+while !has_student?(new_students)
 	students = input_students
 end
+
+students=existing_students.concat(new_students)
 
 print "Which cohort would you like to filter by?\n> "
 cohort_sym= (cleanup(gets.chomp)).to_sym
